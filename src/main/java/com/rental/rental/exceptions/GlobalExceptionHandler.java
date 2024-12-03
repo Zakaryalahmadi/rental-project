@@ -12,9 +12,9 @@ import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(NotFoundRentalException.class)
+    @ExceptionHandler(RentalNotFoundException.class)
     public ResponseEntity<ApiError> handleNotFoundRentalException(
-            NotFoundRentalException e,
+            RentalNotFoundException e,
             WebRequest request
     ) {
         ApiError apiError = new ApiError(
@@ -58,6 +58,30 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError(
                 request.getDescription(false),
                 errors,
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError>  handleIllegalArgumentException(IllegalArgumentException e,  WebRequest request) {
+        ApiError apiError = new ApiError(
+                request.getDescription(false),
+                e.getMessage().lines().toList(),
+                HttpStatus.CONFLICT.value(),
+                LocalDateTime.now()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiError>  handleAccessDeniedException(UserNotFoundException e,  WebRequest request) {
+        ApiError apiError = new ApiError(
+                request.getDescription(false),
+                e.getMessage().lines().toList(),
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now()
         );

@@ -1,6 +1,7 @@
 package com.rental.rental.entities;
 
 
+import com.rental.rental.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.Data;
 

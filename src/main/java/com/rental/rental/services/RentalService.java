@@ -3,15 +3,14 @@ package com.rental.rental.services;
 import com.rental.rental.dto.request.CreateRentalDto;
 import com.rental.rental.dto.RentalDto;
 import com.rental.rental.dto.RentalMapper;
+import com.rental.rental.dto.request.UpdateRentalDto;
 import com.rental.rental.dto.response.RentalResponse;
 import com.rental.rental.entities.Rental;
 import com.rental.rental.entities.User;
-import com.rental.rental.exceptions.NotFoundRentalException;
+import com.rental.rental.exceptions.RentalNotFoundException;
 import com.rental.rental.repositories.RentalRepository;
 import com.rental.rental.repositories.UserRepository;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 
@@ -23,10 +22,13 @@ public class RentalService {
 
     private  final UserRepository userRepository;
 
-    public RentalService(RentalRepository rentalRepository, RentalMapper rentalMapper, UserRepository userRepository){
+    private final UserService userService;
+
+    public RentalService(RentalRepository rentalRepository, RentalMapper rentalMapper, UserRepository userRepository, UserService userService){
         this.rentalRepository = rentalRepository;
         this.rentalMapper = rentalMapper;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public RentalResponse getAllRentals() {
@@ -44,7 +46,7 @@ public class RentalService {
                 .findById(id)
                 .map(rentalMapper::mapToDto)
                 .orElseThrow(
-                        () -> new NotFoundRentalException("Rental with id " + id + " not found")
+                        () -> new RentalNotFoundException("Rental with id " + id + " not found")
                 );
     }
 
@@ -53,6 +55,18 @@ public class RentalService {
                 .orElseThrow(() -> new RuntimeException("Utilisateur fictif non trouvé"));
 
         Rental rental = rentalMapper.mapToEntity(createRentalDto, pictureUrl, user);
+
+        rentalRepository.save(rental);
+    }
+
+    public void updateRental(Long id, UpdateRentalDto updateRentalDto) {
+        Rental rental = rentalRepository.findById(id)
+                .orElseThrow(() -> new RentalNotFoundException("Rental with ID " + id + " not found"));
+
+        rental.setName(updateRentalDto.name());
+        rental.setSurface(updateRentalDto.surface());
+        rental.setPrice(updateRentalDto.price());
+        rental.setDescription(updateRentalDto.description());
 
         rentalRepository.save(rental);
     }

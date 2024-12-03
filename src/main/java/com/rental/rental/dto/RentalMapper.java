@@ -17,7 +17,9 @@ public class RentalMapper {
                 rental.getPrice(),
                 rental.getPicture(),
                 rental.getDescription(),
-                rental.getOwner() != null ? rental.getOwner().getId() : null
+                rental.getOwner() != null ? rental.getOwner().getId() : null,
+                rental.getCreatedAt(),
+                rental.getCreatedAt()
         );
     }
 
