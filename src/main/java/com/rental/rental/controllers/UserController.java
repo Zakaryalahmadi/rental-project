@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
-@RequestMapping("/api/auth")
+@RequestMapping("/api/")
 public class UserController {
 
     private final JWTService jwtService;
@@ -32,7 +32,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping("/me")
+    @GetMapping("auth/me")
     public ResponseEntity<UserDto> getCurrentUser(@RequestHeader("Authorization") String authorizationHeader) {
 
         String token = authorizationHeader.substring(7);
@@ -42,7 +42,7 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
-    @PostMapping("/login")
+    @PostMapping("auth/login")
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequestDto loginRequest) {
         User user = userService.findByEmail(loginRequest.email());
 
@@ -55,7 +55,7 @@ public class UserController {
         return ResponseEntity.ok(new TokenResponse(token));
     }
 
-    @PostMapping("/register")
+    @PostMapping("auth/register")
     public ResponseEntity<TokenResponse> register(@RequestBody @Valid RegisterRequestDto registerRequest) {
         userService.registerUser(registerRequest);
 
@@ -64,6 +64,11 @@ public class UserController {
         String token = jwtService.generateToken(registeredUser);
 
         return ResponseEntity.ok(new TokenResponse(token));
+    }
+
+    @GetMapping("/user/{id}")
+    public UserDto getUserById(@PathVariable("id") Long id){
+        return userService.getUserById(id);
     }
 
 }

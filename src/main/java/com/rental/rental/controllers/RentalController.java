@@ -8,9 +8,11 @@ import com.rental.rental.dto.response.RentalResponse;
 import com.rental.rental.dto.response.MessageResponse;
 import com.rental.rental.exceptions.MissingPictureException;
 import com.rental.rental.services.CloudinaryService;
+import com.rental.rental.services.JWTService;
 import com.rental.rental.services.RentalService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,9 +23,12 @@ public class RentalController {
 
     private final CloudinaryService cloudinaryService;
 
-    public RentalController(RentalService rentalService, CloudinaryService cloudinaryService) {
+    private final JWTService jwtService;
+
+    public RentalController(RentalService rentalService, CloudinaryService cloudinaryService, JWTService jwtService) {
         this.rentalService = rentalService;
         this.cloudinaryService = cloudinaryService;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("")
@@ -44,8 +49,11 @@ public class RentalController {
             throw new MissingPictureException("Picture file is mandatory and cannot be empty.");
         }
         try {
+            String token = authorizationHeader.substring(7);
+            Jwt decodedToken = jwtService.decodeToken(token);
+
             String pictureUrl = cloudinaryService.uploadFile(file);
-            rentalService.createRental(rentalDto, pictureUrl);
+            rentalService.createRental(rentalDto, pictureUrl, decodedToken);
             MessageResponse responseMessage = new MessageResponse("Rental created !");
             return ResponseEntity.ok(responseMessage);
 

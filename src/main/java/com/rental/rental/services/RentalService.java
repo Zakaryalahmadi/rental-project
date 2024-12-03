@@ -1,5 +1,6 @@
 package com.rental.rental.services;
 
+import com.rental.rental.dto.UserDto;
 import com.rental.rental.dto.request.CreateRentalDto;
 import com.rental.rental.dto.RentalDto;
 import com.rental.rental.dto.RentalMapper;
@@ -10,6 +11,7 @@ import com.rental.rental.entities.User;
 import com.rental.rental.exceptions.RentalNotFoundException;
 import com.rental.rental.repositories.RentalRepository;
 import com.rental.rental.repositories.UserRepository;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,12 +52,12 @@ public class RentalService {
                 );
     }
 
-    public void createRental(CreateRentalDto createRentalDto, String pictureUrl) {
-        User user = userRepository.findById(3L)
-                .orElseThrow(() -> new RuntimeException("Utilisateur fictif non trouvé"));
+    public void createRental(CreateRentalDto createRentalDto, String pictureUrl, Jwt token) {
+        UserDto currentUserDto = userService.getCurrentUser(token);
+
+        User user = userService.findByEmail(currentUserDto.email());
 
         Rental rental = rentalMapper.mapToEntity(createRentalDto, pictureUrl, user);
-
         rentalRepository.save(rental);
     }
 

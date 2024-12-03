@@ -1,5 +1,6 @@
 package com.rental.rental.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import lombok.Data;
@@ -18,8 +19,10 @@ public record RentalDto (
         Long ownerId,
 
         @JsonProperty("created_at")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
         LocalDateTime createdAt,
 
         @JsonProperty("updated_at")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
         LocalDateTime updatedAt
 ) {}

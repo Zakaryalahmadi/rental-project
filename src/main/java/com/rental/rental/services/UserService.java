@@ -45,6 +45,10 @@ public class UserService {
         userRepository.save(newUser);
     }
 
+    public UserDto getUserById(Long id){
+        return userRepository.findById(id).map(userMapper).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+    }
+
     public UserDto getCurrentUser(Jwt decodedJwt) {
         String email = decodedJwt.getSubject();
         User user = findByEmail(email);
