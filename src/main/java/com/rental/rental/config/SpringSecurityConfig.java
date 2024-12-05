@@ -1,6 +1,7 @@
 package com.rental.rental.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,8 +29,9 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 public class SpringSecurityConfig {
 
-    private static final String SECRET = "oHmh3g2ecmWMxaBxGcaU+BCOt+dmtgByIogRw1IdBgb45ST8tt5UJdI3/jg0Q9cf"; // TODO : ne pas mettre en dur
+    static Dotenv dotenv = Dotenv.load();
 
+    private static final String SECRET = dotenv.get("SECRET");
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -37,7 +39,7 @@ public class SpringSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register","/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/register","/api/auth/login", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(Customizer.withDefaults()))
@@ -46,11 +48,13 @@ public class SpringSecurityConfig {
 
     @Bean
     public JwtEncoder jwtEncoder() {
+        assert SECRET != null;
         return new NimbusJwtEncoder(new ImmutableSecret<>(SECRET.getBytes()));
     }
 
     @Bean
     public JwtDecoder jwtDecoder() {
+        assert SECRET != null;
         SecretKeySpec secretKey = new SecretKeySpec(SECRET.getBytes(), 0, SECRET.getBytes().length, "RSA");
         return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS256).build();
     }

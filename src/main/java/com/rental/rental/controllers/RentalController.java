@@ -10,6 +10,8 @@ import com.rental.rental.exceptions.MissingPictureException;
 import com.rental.rental.services.CloudinaryService;
 import com.rental.rental.services.JWTService;
 import com.rental.rental.services.RentalService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/rentals")
+@Tag(name = "Rentals", description = "Endpoints for managing rental properties")
 public class RentalController {
     private final RentalService rentalService;
 
@@ -32,16 +35,22 @@ public class RentalController {
     }
 
     @GetMapping("")
+    @Operation(summary = "Get all rentals", description = "Retrieve a list of all rental properties.")
     public RentalResponse getAllRentals() {
         return rentalService.getAllRentals();
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get rental by ID", description = "Retrieve details of a rental property by its ID.")
     public RentalDto getRentalById(@PathVariable("id") Long id) {
         return rentalService.getRentalById(id);
     }
 
     @PostMapping("")
+    @Operation(
+            summary = "Create a new rental",
+            description = "Create a new rental property by providing details and an image."
+    )
     public ResponseEntity<MessageResponse> createRental(@RequestParam("picture") MultipartFile file,
                                                         @Valid @ModelAttribute CreateRentalDto rentalDto,
                                                         @RequestHeader("Authorization") String authorizationHeader) {
@@ -63,6 +72,10 @@ public class RentalController {
     }
 
     @PutMapping("/{id}")
+    @Operation(
+            summary = "Update an existing rental",
+            description = "Update the details of an existing rental property by its ID."
+    )
     public ResponseEntity<MessageResponse> updateRental(
             @PathVariable("id") Long id,
             @Valid @ModelAttribute UpdateRentalDto updateRentalDto) {
