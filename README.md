@@ -1,4 +1,4 @@
-Rental API
+# Rental API
 Rental API est une application RESTful qui permet de gérer des utilisateurs, des locations, et des messages, avec une intégration JWT pour l'authentification et Cloudinary pour la gestion des fichiers.
 
 Fonctionnalités principales
