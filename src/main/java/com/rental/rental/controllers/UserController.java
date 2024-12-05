@@ -49,14 +49,7 @@ public class UserController {
     @PostMapping("auth/login")
     @Operation(summary = "User login", description = "Authenticate a user by email and password, and return a JWT token.")
     public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequestDto loginRequest) {
-        User user = userService.findByEmail(loginRequest.email());
-
-        if (!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {// le faire dans un service
-            throw new IllegalArgumentException("Invalid email or password");
-        }
-
-        String token = jwtService.generateToken(user);
-
+        String token = userService.loginUser(loginRequest.email(), loginRequest.password());
         return ResponseEntity.ok(new TokenResponse(token));
     }
 

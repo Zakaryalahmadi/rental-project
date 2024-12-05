@@ -19,11 +19,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final JWTService jwtService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, JWTService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
+        this.jwtService = jwtService;
     }
 
     public User findByEmail(String email) {
@@ -53,5 +55,15 @@ public class UserService {
         String email = decodedJwt.getSubject();
         User user = findByEmail(email);
         return userMapper.apply(user);
+    }
+
+    public String loginUser(String email, String password) {
+        User user = findByEmail(email);
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+
+        return jwtService.generateToken(user);
     }
 }
