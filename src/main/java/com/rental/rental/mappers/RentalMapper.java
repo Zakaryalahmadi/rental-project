@@ -1,6 +1,7 @@
-package com.rental.rental.dto;
+package com.rental.rental.mappers;
 
 
+import com.rental.rental.dto.RentalDto;
 import com.rental.rental.dto.request.CreateRentalDto;
 import com.rental.rental.entities.Rental;
 import com.rental.rental.entities.User;

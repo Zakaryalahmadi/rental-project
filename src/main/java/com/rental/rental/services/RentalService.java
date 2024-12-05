@@ -3,7 +3,7 @@ package com.rental.rental.services;
 import com.rental.rental.dto.UserDto;
 import com.rental.rental.dto.request.CreateRentalDto;
 import com.rental.rental.dto.RentalDto;
-import com.rental.rental.dto.RentalMapper;
+import com.rental.rental.mappers.RentalMapper;
 import com.rental.rental.dto.request.UpdateRentalDto;
 import com.rental.rental.dto.response.RentalResponse;
 import com.rental.rental.entities.Rental;

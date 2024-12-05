@@ -1,5 +1,6 @@
-package com.rental.rental.dto;
+package com.rental.rental.mappers;
 
+import com.rental.rental.dto.UserDto;
 import com.rental.rental.entities.User;
 import org.springframework.stereotype.Component;
 

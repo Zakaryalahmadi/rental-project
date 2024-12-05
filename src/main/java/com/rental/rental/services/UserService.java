@@ -1,17 +1,14 @@
 package com.rental.rental.services;
 
 import com.rental.rental.dto.UserDto;
-import com.rental.rental.dto.UserMapper;
+import com.rental.rental.mappers.UserMapper;
 import com.rental.rental.dto.request.RegisterRequestDto;
 import com.rental.rental.entities.User;
 import com.rental.rental.exceptions.UserNotFoundException;
 import com.rental.rental.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserService {

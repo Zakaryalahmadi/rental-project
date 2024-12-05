@@ -27,12 +27,10 @@ public class UserController {
 
     private final JWTService jwtService;
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     public UserController(JWTService jwtService, UserService userService, PasswordEncoder passwordEncoder) {
         this.jwtService = jwtService;
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("auth/me")
